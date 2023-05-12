@@ -1,0 +1,12 @@
+node_modules/
+dist/
+src/generated
+proto/buf.lock
+
+.idea
+package-lock.json
+
+npm-debug.log*
+*.tsbuildinfo
+.npm
+.eslintcache
