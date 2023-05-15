@@ -6,8 +6,8 @@
   "scripts": {
     "proto": "cd proto && npx buf mod update && npx buf generate .",
     "build": "tsc --noEmitOnError",
-    "ticket_service": "node ./dist/ticket_service.js",
-    "user_session_service": "node ./dist/user_session_service.js",
+    "ticket_service": "ts-node-dev --watch ./src --respawn --transpile-only ./src/ticket_service.ts",
+    "user_session_service": "ts-node-dev --watch ./src --respawn --transpile-only ./src/user_session_service.ts",
     "lint": "eslint --ignore-path .eslintignore --ext .ts .",
     "format": "prettier --ignore-path .eslintignore --write \"**/*.+(js|ts|json)\""
   },
