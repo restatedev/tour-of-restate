@@ -8,15 +8,15 @@ import { BoolValue } from "./generated/proto/google/protobuf/wrappers";
 import { Empty } from "./generated/proto/google/protobuf/empty";
 
 class TicketSvc implements TicketService {
-  markAsSold(request: Ticket): Promise<Empty> {
+  async markAsSold(request: Ticket): Promise<Empty> {
     return Promise.resolve(Empty.create({}));
   }
 
-  reserve(request: Ticket): Promise<BoolValue> {
+  async reserve(request: Ticket): Promise<BoolValue> {
     return Promise.resolve(BoolValue.create({}));
   }
 
-  unreserve(request: Ticket): Promise<Empty> {
+  async unreserve(request: Ticket): Promise<Empty> {
     return Promise.resolve(BoolValue.create({}));
   }
 }
@@ -25,4 +25,4 @@ restate.createServer().bindService({
   service: "TicketService",
   instance: new TicketSvc(),
   descriptor: protoMetadata,
-});
+}).listen(8082);

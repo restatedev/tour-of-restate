@@ -47,5 +47,4 @@ message Ticket {
 
 message ResultValue {
 	bool value = 1;
-
 }
