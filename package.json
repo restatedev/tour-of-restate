@@ -6,23 +6,33 @@
   "scripts": {
     "proto": "cd proto && npx buf mod update && npx buf generate .",
     "build": "tsc --noEmitOnError",
-    "ticket_service": "ts-node-dev --watch ./src --respawn --transpile-only ./src/ticket_service.ts",
-    "user_session_service": "ts-node-dev --watch ./src --respawn --transpile-only ./src/user_session_service.ts",
     "lint": "eslint --ignore-path .eslintignore --ext .ts .",
-    "format": "prettier --ignore-path .eslintignore --write \"**/*.+(js|ts|json)\""
+    "format": "prettier --ignore-path .eslintignore --write \"**/*.+(js|ts|json)\"",
+    "app": "RESTATE_DEBUG_LOG=LOG ts-node-dev --respawn --transpile-only src/app/app.ts",
+    "part1": "RESTATE_DEBUG_LOG=LOG ts-node-dev --respawn --transpile-only src/part1/app.ts",
+    "part2": "RESTATE_DEBUG_LOG=LOG ts-node-dev --respawn --transpile-only src/part2/app.ts",
+    "part3": "RESTATE_DEBUG_LOG=LOG ts-node-dev --respawn --transpile-only src/part3/app.ts",
+    "part4": "RESTATE_DEBUG_LOG=LOG ts-node-dev --respawn --transpile-only src/part4/app.ts"
   },
-  "author": "<your name here>",
-  "license": "ISC",
+  "author": "Restate Developers",
+  "email": "code@restate.dev",
   "dependencies": {
-    "@restatedev/restate-sdk": "^1.0.17",
+    "@restatedev/restate-sdk": "^1.0.19",
     "protobufjs": "^7.2.2",
     "ts-proto": "^1.140.0"
   },
   "devDependencies": {
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.0.4",
-    "prettier": "^2.8.8",
-    "eslint": "^8.40.0",
-    "@bufbuild/buf": "1.15.0"
+    "@bufbuild/buf": "^1.15.0-1",
+    "@types/uuid": "^9.0.0",
+    "@types/node": "^18.14.2",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "eslint": "^8.35.0",
+    "prettier": "^2.8.4",
+    "protobufjs": "^7.2.2",
+    "protobufjs-cli": "^1.1.1",
+    "ts-node-dev": "^1.1.1",
+    "typescript": "^5.0.2",
+    "uuid": "^9.0.0"
   }
 }

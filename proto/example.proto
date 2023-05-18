@@ -48,3 +48,14 @@ message Ticket {
 message ResultValue {
 	bool value = 1;
 }
+
+service CheckoutService {
+	option (dev.restate.ext.service_type) = UNKEYED;
+
+	rpc Checkout (CheckoutFlowRequest) returns (google.protobuf.BoolValue);
+}
+
+message CheckoutFlowRequest {
+	string user_id = 1;
+	repeated string tickets = 2;
+}
