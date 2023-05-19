@@ -72,9 +72,9 @@ export class UserSessionService implements IUserSessionService {
     if (cart?.find((el) => el === request.ticketId)) {
       const ticketServiceClient = new TicketServiceClientImpl(ctx);
       await ctx.inBackground(() =>
-          ticketServiceClient.unreserve(
-              Ticket.create({ ticketId: request.ticketId })
-          )
+        ticketServiceClient.unreserve(
+          Ticket.create({ ticketId: request.ticketId })
+        )
       );
       const newCart = cart.filter((el) => el !== request.ticketId);
       ctx.set("cart", newCart);

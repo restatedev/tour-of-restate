@@ -26,7 +26,8 @@ export class CheckoutService implements ICheckoutService {
         ctx,
         doPayment,
         100,
-        500
+        500,
+        5
       );
 
     const ticketServiceClient = new TicketServiceClientImpl(ctx);
@@ -35,20 +36,20 @@ export class CheckoutService implements ICheckoutService {
     if (success) {
       for await (const ticketId of request.tickets) {
         await ctx.inBackground(() =>
-            ticketServiceClient.markAsSold(Ticket.create({ ticketId: ticketId }))
+          ticketServiceClient.markAsSold(Ticket.create({ ticketId: ticketId }))
         );
       }
       await ctx.sideEffect<boolean>(async () =>
-          emailClient.notifyUserOfPaymentSuccess(request.userId)
+        emailClient.notifyUserOfPaymentSuccess(request.userId)
       );
     } else {
       for await (const ticketId of request.tickets) {
         await ctx.inBackground(() =>
-            ticketServiceClient.unreserve(Ticket.create({ ticketId: ticketId }))
+          ticketServiceClient.unreserve(Ticket.create({ ticketId: ticketId }))
         );
       }
       await ctx.sideEffect<boolean>(async () =>
-          emailClient.notifyUserOfPaymentFailure(request.userId)
+        emailClient.notifyUserOfPaymentFailure(request.userId)
       );
     }
 
