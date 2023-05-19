@@ -7,7 +7,7 @@ import {
 } from "../generated/proto/example";
 import { BoolValue } from "../generated/proto/google/protobuf/wrappers";
 import { v4 as uuid } from "uuid";
-import { StripeClient } from "../aux/stripe_client";
+import { PaymentClient } from "../aux/payment_client";
 import { EmailClient } from "../aux/email_client";
 
 export class CheckoutService implements ICheckoutService {
@@ -18,9 +18,9 @@ export class CheckoutService implements ICheckoutService {
 
     const amount = request.tickets.length * 40;
 
-    const stripe = StripeClient.get();
+    const paymentClient = PaymentClient.get();
     const success = await ctx.sideEffect<boolean>(
-      async () => await stripe.call(idempotencyKey, amount)
+      async () => await paymentClient.call(idempotencyKey, amount)
     );
 
     const ticketServiceClient = new TicketServiceClientImpl(ctx);

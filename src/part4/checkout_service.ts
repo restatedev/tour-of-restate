@@ -7,7 +7,7 @@ import {
 import { BoolValue } from "../generated/proto/google/protobuf/wrappers";
 import * as restate from "@restatedev/restate-sdk";
 import { v4 as uuid } from "uuid";
-import { StripeClient } from "../aux/stripe_client";
+import { PaymentClient } from "../aux/payment_client";
 import { RestateUtils } from "@restatedev/restate-sdk";
 import { EmailClient } from "../aux/email_client";
 
@@ -19,8 +19,8 @@ export class CheckoutService implements ICheckoutService {
 
     const amount = request.tickets.length * 40;
 
-    const stripe = StripeClient.get();
-    const doPayment = async () => stripe.call(idempotencyKey, amount);
+    const paymentClient = PaymentClient.get();
+    const doPayment = async () => paymentClient.failingCall(idempotencyKey, amount);
     const success: boolean =
       await RestateUtils.retryExceptionalSideEffectWithBackoff(
         ctx,
