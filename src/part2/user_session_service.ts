@@ -33,7 +33,7 @@ export class UserSessionService implements IUserSessionService {
         ticketId: request.ticketId,
       });
 
-      await ctx.oneWayCall(
+      await ctx.inBackground(
         () => userSessionClient.expireTicket(expireTicketRequest),
         15 * 60 * 1000 // delay call for 15 minutes
       );
@@ -70,7 +70,7 @@ export class UserSessionService implements IUserSessionService {
 
     if (cart?.find((el) => el === request.ticketId)) {
       const ticketServiceClient = new TicketServiceClientImpl(ctx);
-      await ctx.oneWayCall(() =>
+      await ctx.inBackground(() =>
         ticketServiceClient.unreserve(
           Ticket.create({ ticketId: request.ticketId })
         )

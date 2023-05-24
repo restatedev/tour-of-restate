@@ -28,7 +28,7 @@ export class CheckoutService implements ICheckoutService {
 
     if (success) {
       for await (const ticketId of request.tickets) {
-        await ctx.oneWayCall(() =>
+        await ctx.inBackground(() =>
           ticketServiceClient.markAsSold(Ticket.create({ ticketId: ticketId }))
         );
       }
@@ -37,7 +37,7 @@ export class CheckoutService implements ICheckoutService {
       );
     } else {
       for await (const ticketId of request.tickets) {
-        await ctx.oneWayCall(() =>
+        await ctx.inBackground(() =>
           ticketServiceClient.unreserve(Ticket.create({ ticketId: ticketId }))
         );
       }
