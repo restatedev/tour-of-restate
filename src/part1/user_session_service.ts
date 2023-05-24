@@ -17,7 +17,7 @@ export class UserSessionService implements IUserSessionService {
     const ctx = restate.useContext(this);
 
     const ticketServiceClient = new TicketServiceClientImpl(ctx);
-    await ctx.oneWayCall(() =>
+    await ctx.inBackground(() =>
       ticketServiceClient.reserve(Ticket.create({ ticketId: request.ticketId }))
     );
 
@@ -43,7 +43,7 @@ export class UserSessionService implements IUserSessionService {
 
     const ticketServiceClient = new TicketServiceClientImpl(ctx);
 
-    await ctx.oneWayCall(() =>
+    await ctx.inBackground(() =>
       ticketServiceClient.unreserve(
         Ticket.create({ ticketId: request.ticketId })
       )
