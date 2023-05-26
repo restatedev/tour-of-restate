@@ -1,8 +1,13 @@
 # A Tour of Restate
 
-This repository contains the code examples for the "Tour of Restate" tutorial.
+Restate is a system for easily building resilient applications using **distributed durable RPC & async/await**.
 
-Have a look at the tutorial to find out more.
+This repository contains the code examples for the `Tour of Restate` tutorial.
+This tutorial takes your through key Restate features by developing an end-to-end ticketing app.
+
+❓ Learn more about Restate from the [Restate documentation](https://github.com/restatedev/documentation).
+
+Have a look at the `Tour of Restate` tutorial in the documentation to build and run the application in this repository.
 
 ## Releasing
 

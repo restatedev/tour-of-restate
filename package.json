@@ -19,7 +19,8 @@
   "dependencies": {
     "@restatedev/restate-sdk": "1.0.26",
     "protobufjs": "^7.2.2",
-    "ts-proto": "^1.140.0"
+    "ts-proto": "^1.140.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@bufbuild/buf": "^1.15.0-1",
@@ -29,10 +30,8 @@
     "@typescript-eslint/parser": "^5.53.0",
     "eslint": "^8.35.0",
     "prettier": "^2.8.4",
-    "protobufjs": "^7.2.2",
     "protobufjs-cli": "^1.1.1",
     "ts-node-dev": "^1.1.1",
-    "typescript": "^5.0.2",
-    "uuid": "^9.0.0"
+    "typescript": "^5.0.2"
   }
 }
