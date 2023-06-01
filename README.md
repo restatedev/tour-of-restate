@@ -11,10 +11,16 @@ Have a look at the `Tour of Restate` tutorial in the documentation to build and 
 
 ## Releasing
 
+In order to create a new release, push a tag of the form `vX.Y.Z`.
+Then [create a release via GitHub](https://github.com/restatedev/tour-of-restate-typescript/releases).
+
+Releases of this repository are referred to by the [documentation](https://github.com/restatedev/documentation).
+Please update the version tag referenced on the [Tour of Restate](https://github.com/restatedev/documentation/blob/main/docs/tutorials/tour-of-restate.mdx) documentation page.
+
 ### Upgrading Typescript SDK
 Upgrade the version tag in `package.json` and rerun the different parts of the tutorial:
 ```
-npm install 
+npm install
 npm run proto
 npm run build
 npm run app
@@ -24,7 +30,4 @@ npm run part3
 npm run part4
 ```
 
-### Upgrading Restate runtime
-This repository does not make use of the runtime directly. 
-But this repository is part of the `Tour of Restate` tutorial in the docs, which does refer to Restate runtime container image. 
-Do the version upgrades in the `Tour of Restate` tutorial in the docs.
+An SDK upgrade warrants a new release.
