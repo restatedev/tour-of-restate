@@ -33,7 +33,7 @@ export class UserSessionService implements IUserSessionService {
         ticketId: request.ticketId,
       });
 
-      await ctx.oneWayCall(
+      await ctx.delayedCall(
         () => userSessionClient.expireTicket(expireTicketRequest),
         15 * 60 * 1000 // delay call for 15 minutes
       );

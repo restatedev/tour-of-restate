@@ -8,7 +8,7 @@ import { setTimeout } from "timers/promises";
 
 export class TicketService implements ITicketService {
   async reserve(request: Ticket): Promise<BoolValue> {
-    await setTimeout(5000);
+    await setTimeout(35000);
     return BoolValue.create({ value: true });
   }
 

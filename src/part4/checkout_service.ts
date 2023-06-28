@@ -21,14 +21,12 @@ export class CheckoutService implements ICheckoutService {
 
     const paymentClient = PaymentClient.get();
     const doPayment = async () => paymentClient.failingCall(idempotencyKey, amount);
-    const success: boolean =
-      await RestateUtils.retryExceptionalSideEffectWithBackoff(
+    const retrySettings = { initialDelayMs: 100, maxDelayMs: 500, maxRetries: 5 }
+    const success: boolean = await RestateUtils.retryExceptionalSideEffect(
         ctx,
-        doPayment,
-        100,
-        500,
-        5
-      );
+        retrySettings,
+        doPayment
+    );
 
     const ticketServiceClient = new TicketServiceClientImpl(ctx);
     const emailClient = EmailClient.get();
