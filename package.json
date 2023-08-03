@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Tour of Restate's key features with the Typescript SDK",
   "type": "commonjs",
+  "license": "MIT",
   "scripts": {
     "proto": "cd proto && npx buf mod update && npx buf generate .",
     "build": "tsc --noEmitOnError",
