@@ -5,7 +5,7 @@ Restate is a system for easily building resilient applications using **distribut
 This repository contains the code examples for the `Tour of Restate` tutorial.
 This tutorial takes your through key Restate features by developing an end-to-end ticketing app.
 
-❓ Learn more about Restate from the [Restate documentation](https://github.com/restatedev/documentation).
+❓ Learn more about Restate from the [Restate documentation](https://docs.restate.dev).
 
 Have a look at the `Tour of Restate` tutorial in the documentation to build and run the application in this repository.
 

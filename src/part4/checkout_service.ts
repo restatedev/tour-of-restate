@@ -8,7 +8,6 @@ import { BoolValue } from "../generated/proto/google/protobuf/wrappers";
 import * as restate from "@restatedev/restate-sdk";
 import { v4 as uuid } from "uuid";
 import { PaymentClient } from "../aux/payment_client";
-import { RestateUtils } from "@restatedev/restate-sdk";
 import { EmailClient } from "../aux/email_client";
 
 export class CheckoutService implements ICheckoutService {
@@ -21,12 +20,7 @@ export class CheckoutService implements ICheckoutService {
 
     const paymentClient = PaymentClient.get();
     const doPayment = async () => paymentClient.failingCall(idempotencyKey, amount);
-    const retrySettings = { initialDelayMs: 100, maxDelayMs: 500, maxRetries: 5 }
-    const success: boolean = await RestateUtils.retryExceptionalSideEffect(
-        ctx,
-        retrySettings,
-        doPayment
-    );
+    const success: boolean = await ctx.sideEffect(doPayment);
 
     const ticketServiceClient = new TicketServiceClientImpl(ctx);
     const emailClient = EmailClient.get();
