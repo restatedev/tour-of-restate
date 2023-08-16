@@ -12,20 +12,20 @@
 import * as restate from "@restatedev/restate-sdk";
 
 const doAddTicket = async (
-  _ctx: restate.RpcContext,
-  _userId: string,
-  _ticketId: string,
+  ctx: restate.RpcContext,
+  userId: string,
+  ticketId: string,
 ) => {
   return true;
 };
 
 const doExpireTicket = async (
-  _ctx: restate.RpcContext,
-  _userId: string,
-  _ticketId: string,
+  ctx: restate.RpcContext,
+  userId: string,
+  ticketId: string,
 ) => {};
 
-const doCheckout = async (_ctx: restate.RpcContext, _userId: string) => {
+const doCheckout = async (ctx: restate.RpcContext, userId: string) => {
   return true;
 };
 
