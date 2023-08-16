@@ -26,7 +26,8 @@ const doCheckout = async (
 
   const paymentClient = PaymentClient.get();
 
-  const doPayment = async () => paymentClient.failingCall(idempotencyKey, totalPrice);
+  const doPayment = async () =>
+    paymentClient.failingCall(idempotencyKey, totalPrice);
   const success = await ctx.sideEffect(doPayment);
 
   const email = EmailClient.get();

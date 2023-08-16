@@ -12,8 +12,8 @@
 import * as restate from "@restatedev/restate-sdk";
 
 const doCheckout = async (
-  ctx: restate.RpcContext,
-  request: { userId: string; tickets: string[] },
+  _ctx: restate.RpcContext,
+  _request: { userId: string; tickets: string[] },
 ) => {
   return true;
 };

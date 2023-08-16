@@ -12,22 +12,22 @@
 import * as restate from "@restatedev/restate-sdk";
 import { setTimeout } from "timers/promises";
 
-enum TicketStatus {
+enum _TicketStatus {
   Available,
   Reserved,
   Sold,
 }
 
-const doReserveTicket = async (ctx: restate.RpcContext) => {
+const doReserveTicket = async (_ctx: restate.RpcContext) => {
   await setTimeout(35000);
   return true;
 };
 
-const doUnreserveTicket = async (ctx: restate.RpcContext) => {
+const doUnreserveTicket = async (_ctx: restate.RpcContext) => {
   return true;
 };
 
-const doMarkAsSold = async (ctx: restate.RpcContext) => {
+const doMarkAsSold = async (_ctx: restate.RpcContext) => {
   return true;
 };
 

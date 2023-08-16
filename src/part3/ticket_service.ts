@@ -10,7 +10,6 @@
  */
 
 import * as restate from "@restatedev/restate-sdk";
-import { setTimeout } from "timers/promises";
 
 enum TicketStatus {
   Available,

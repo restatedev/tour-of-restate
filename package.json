@@ -9,6 +9,7 @@
     "build": "tsc --noEmitOnError",
     "lint": "eslint --ignore-path .eslintignore --ext .ts .",
     "format": "prettier --ignore-path .eslintignore --write \"**/*.+(js|ts|json)\"",
+    "verify": "npm run format -- --check && npm run lint && npm run build",
     "app": "RESTATE_DEBUG_LOGGING=JOURNAL ts-node-dev --respawn --transpile-only src/app/app.ts",
     "part1": "RESTATE_DEBUG_LOGGING=JOURNAL ts-node-dev --respawn --transpile-only src/part1/app.ts",
     "part2": "RESTATE_DEBUG_LOGGING=JOURNAL ts-node-dev --respawn --transpile-only src/part2/app.ts",
