@@ -19,7 +19,7 @@ enum TicketStatus {
 
 const reserve = async (ctx: restate.RpcContext) => {
   const status =
-    (await ctx.get<TicketStatus>("status")) || TicketStatus.Available;
+    (await ctx.get<TicketStatus>("status")) ?? TicketStatus.Available;
 
   if (status === TicketStatus.Available) {
     ctx.set("status", TicketStatus.Reserved);
@@ -31,7 +31,7 @@ const reserve = async (ctx: restate.RpcContext) => {
 
 const unreserve = async (ctx: restate.RpcContext) => {
   const status =
-    (await ctx.get<TicketStatus>("status")) || TicketStatus.Available;
+    (await ctx.get<TicketStatus>("status")) ?? TicketStatus.Available;
 
   if (status === TicketStatus.Sold) {
     return false;
@@ -43,7 +43,7 @@ const unreserve = async (ctx: restate.RpcContext) => {
 
 const markAsSold = async (ctx: restate.RpcContext) => {
   const status =
-    (await ctx.get<TicketStatus>("status")) || TicketStatus.Available;
+    (await ctx.get<TicketStatus>("status")) ?? TicketStatus.Available;
 
   if (status === TicketStatus.Reserved) {
     ctx.set("status", TicketStatus.Sold);

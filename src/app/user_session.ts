@@ -23,7 +23,7 @@ const expireTicket = async (
   ctx: restate.RpcContext,
   userId: string,
   ticketId: string,
-) => { };
+) => {};
 
 const checkout = async (ctx: restate.RpcContext, userId: string) => {
   return true;

@@ -21,7 +21,7 @@ const addTicket = async (
   const reservationSuccess = await ctx.rpc(ticketServiceApi).reserve(ticketId);
 
   if (reservationSuccess) {
-    const tickets = (await ctx.get<string[]>("tickets")) || [];
+    const tickets = (await ctx.get<string[]>("tickets")) ?? [];
     tickets.push(ticketId);
     ctx.set("tickets", tickets);
 
@@ -38,7 +38,7 @@ const expireTicket = async (
   userId: string,
   ticketId: string,
 ) => {
-  const tickets = (await ctx.get<string[]>("tickets")) || [];
+  const tickets = (await ctx.get<string[]>("tickets")) ?? [];
 
   const ticketIndex = tickets.findIndex((ticket) => ticket === ticketId);
 
@@ -51,9 +51,9 @@ const expireTicket = async (
 };
 
 const checkout = async (ctx: restate.RpcContext, userId: string) => {
-  const tickets = await ctx.get<string[]>("tickets");
+  const tickets = (await ctx.get<string[]>("tickets")) ?? [];
 
-  if (tickets === null || tickets.length === 0) {
+  if (tickets.length === 0) {
     return false;
   }
 
