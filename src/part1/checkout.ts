@@ -11,7 +11,7 @@
 
 import * as restate from "@restatedev/restate-sdk";
 
-const doCheckout = async (
+const checkout = async (
   ctx: restate.RpcContext,
   request: { userId: string; tickets: string[] },
 ) => {
@@ -19,7 +19,7 @@ const doCheckout = async (
 };
 
 export const checkoutRouter = restate.router({
-  checkout: doCheckout,
+  checkout: checkout,
 });
 
 export const checkoutApi: restate.ServiceApi<typeof checkoutRouter> = {

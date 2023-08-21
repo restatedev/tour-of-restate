@@ -14,7 +14,7 @@ import { v4 as uuid } from "uuid";
 import { PaymentClient } from "../aux/payment_client";
 import { EmailClient } from "../aux/email_client";
 
-const doCheckout = async (
+const checkout = async (
   ctx: restate.RpcContext,
   request: { userId: string; tickets: string[] },
 ) => {
@@ -46,7 +46,7 @@ const doCheckout = async (
 };
 
 export const checkoutRouter = restate.router({
-  checkout: doCheckout,
+  checkout: checkout,
 });
 
 export const checkoutApi: restate.ServiceApi<typeof checkoutRouter> = {

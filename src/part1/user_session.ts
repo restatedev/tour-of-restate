@@ -13,7 +13,7 @@ import * as restate from "@restatedev/restate-sdk";
 import { ticketServiceApi } from "./ticket_service";
 import { checkoutApi } from "./checkout";
 
-const doAddTicket = async (
+const addTicket = async (
   ctx: restate.RpcContext,
   userId: string,
   ticketId: string,
@@ -22,7 +22,7 @@ const doAddTicket = async (
   return true;
 };
 
-const doExpireTicket = async (
+const expireTicket = async (
   ctx: restate.RpcContext,
   userId: string,
   ticketId: string,
@@ -30,7 +30,7 @@ const doExpireTicket = async (
   ctx.send(ticketServiceApi).unreserve(ticketId);
 };
 
-const doCheckout = async (ctx: restate.RpcContext, userId: string) => {
+const checkout = async (ctx: restate.RpcContext, userId: string) => {
   const checkoutRequest = { userId: userId, tickets: ["456"] };
   const success = await ctx.rpc(checkoutApi).checkout(checkoutRequest);
 
@@ -38,9 +38,9 @@ const doCheckout = async (ctx: restate.RpcContext, userId: string) => {
 };
 
 export const userSessionRouter = restate.keyedRouter({
-  addTicket: doAddTicket,
-  expireTicket: doExpireTicket,
-  checkout: doCheckout,
+  addTicket: addTicket,
+  expireTicket: expireTicket,
+  checkout: checkout,
 });
 
 export const userSessionApi: restate.ServiceApi<typeof userSessionRouter> = {

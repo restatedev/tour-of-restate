@@ -17,7 +17,7 @@ enum TicketStatus {
   Sold,
 }
 
-const doReserveTicket = async (ctx: restate.RpcContext) => {
+const reserve = async (ctx: restate.RpcContext) => {
   const status =
     (await ctx.get<TicketStatus>("status")) || TicketStatus.Available;
 
@@ -29,7 +29,7 @@ const doReserveTicket = async (ctx: restate.RpcContext) => {
   }
 };
 
-const doUnreserveTicket = async (ctx: restate.RpcContext) => {
+const unreserve = async (ctx: restate.RpcContext) => {
   const status =
     (await ctx.get<TicketStatus>("status")) || TicketStatus.Available;
 
@@ -41,7 +41,7 @@ const doUnreserveTicket = async (ctx: restate.RpcContext) => {
   }
 };
 
-const doMarkAsSold = async (ctx: restate.RpcContext) => {
+const markAsSold = async (ctx: restate.RpcContext) => {
   const status =
     (await ctx.get<TicketStatus>("status")) || TicketStatus.Available;
 
@@ -54,9 +54,9 @@ const doMarkAsSold = async (ctx: restate.RpcContext) => {
 };
 
 export const ticketDbRouter = restate.keyedRouter({
-  reserve: doReserveTicket,
-  unreserve: doUnreserveTicket,
-  markAsSold: doMarkAsSold,
+  reserve: reserve,
+  unreserve: unreserve,
+  markAsSold: markAsSold,
 });
 
 export const ticketServiceApi: restate.ServiceApi<typeof ticketDbRouter> = {

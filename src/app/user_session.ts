@@ -11,7 +11,7 @@
 
 import * as restate from "@restatedev/restate-sdk";
 
-const doAddTicket = async (
+const addTicket = async (
   ctx: restate.RpcContext,
   userId: string,
   ticketId: string,
@@ -19,20 +19,20 @@ const doAddTicket = async (
   return true;
 };
 
-const doExpireTicket = async (
+const expireTicket = async (
   ctx: restate.RpcContext,
   userId: string,
   ticketId: string,
-) => {};
+) => { };
 
-const doCheckout = async (ctx: restate.RpcContext, userId: string) => {
+const checkout = async (ctx: restate.RpcContext, userId: string) => {
   return true;
 };
 
 export const userSessionRouter = restate.keyedRouter({
-  addTicket: doAddTicket,
-  expireTicket: doExpireTicket,
-  checkout: doCheckout,
+  addTicket: addTicket,
+  expireTicket: expireTicket,
+  checkout: checkout,
 });
 
 export const userSessionApi: restate.ServiceApi<typeof userSessionRouter> = {
