@@ -6,7 +6,7 @@
  *
  * You can find a copy of the license in the file LICENSE
  * in the root directory of this repository or package or at
- * https://github.com/restatedev/tour-of-restate-typescript-handler
+ * https://github.com/restatedev/tour-of-restate-typescript
  */
 
 export class EmailClient {

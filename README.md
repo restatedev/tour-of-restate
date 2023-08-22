@@ -7,15 +7,15 @@ This tutorial takes your through key Restate features by developing an end-to-en
 
 ❓ Learn more about Restate from the [Restate documentation](https://docs.restate.dev).
 
-Have a look at the [Tour of Restate tutorial](https://docs.restate.dev/tour/typescript-handler) in the documentation to build and run the application in this repository.
+Have a look at the [Tour of Restate tutorial](https://docs.restate.dev/tour) in the documentation to build and run the application in this repository.
 
 ## Releasing
 
 In order to create a new release, push a tag of the form `vX.Y.Z`.
-Then [create a release via GitHub](https://github.com/restatedev/tour-of-restate-typescript-handler/releases).
+Then [create a release via GitHub](https://github.com/restatedev/tour-of-restate-typescript/releases).
 
 Releases of this repository are referred to by the [documentation](https://github.com/restatedev/documentation).
-Please update the version tag referenced on the [Tour of Restate](https://github.com/restatedev/documentation/blob/main/docs/tour/typescript-handler.mdx) documentation page.
+Please update the version tag referenced on the [Tour of Restate](https://github.com/restatedev/documentation/blob/main/docs/tour.mdx) documentation page.
 
 ### Upgrading Typescript SDK
 Upgrade the version tag in `package.json` and rerun the different parts of the tutorial:
