@@ -26,22 +26,17 @@ const checkout = async (
 
   const paymentClient = PaymentClient.get();
 
-  const doPayment = async () =>
-    paymentClient.failingCall(idempotencyKey, totalPrice);
+  const doPayment = () => paymentClient.failingCall(idempotencyKey, totalPrice);
   const success = await ctx.sideEffect(doPayment);
 
   const email = EmailClient.get();
 
   if (success) {
     console.info("Payment successful. Notifying user about shipment.");
-    await ctx.sideEffect(async () =>
-      email.notifyUserOfPaymentSuccess(request.userId),
-    );
+    await ctx.sideEffect( () => email.notifyUserOfPaymentSuccess(request.userId));
   } else {
     console.info("Payment failure. Notifying user about it.");
-    await ctx.sideEffect(async () =>
-      email.notifyUserOfPaymentFailure(request.userId),
-    );
+    await ctx.sideEffect(() => email.notifyUserOfPaymentFailure(request.userId));
   }
 
   return success;
