@@ -3,11 +3,11 @@
 [![Discord](https://img.shields.io/discord/1128210118216007792?logo=discord)](https://discord.gg/skW3AZ6uGd)
 [![Twitter](https://img.shields.io/twitter/follow/restatedev.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=restatedev)
 
-# A Tour of Restate: Typescript handler API
+# A Tour of Restate
 
 Restate is a system for easily building resilient applications using **distributed durable RPC & async/await**.
 
-This repository contains the code examples for the `Tour of Restate` tutorial.
+This repository contains the code examples for the `Tour of Restate` tutorial, for the Typescript Handler API and Java SDK.
 This tutorial takes your through key Restate features by developing an end-to-end ticketing app.
 
 ❓ Learn more about Restate from the [Restate documentation](https://docs.restate.dev).
@@ -16,14 +16,14 @@ Have a look at the [Tour of Restate tutorial](https://docs.restate.dev/tour) in 
 
 ## Releasing
 
-In order to create a new release, push a tag of the form `vX.Y.Z`.
+To create a new release, push a tag of the form `vX.Y.Z`.
 Then [create a release via GitHub](https://github.com/restatedev/tour-of-restate-typescript/releases).
 
 Releases of this repository are referred to by the [documentation](https://github.com/restatedev/documentation).
 Please update the version tag referenced on the [Tour of Restate](https://github.com/restatedev/documentation/blob/main/docs/tour.mdx) documentation page.
 
 ### Upgrading Typescript SDK
-Upgrade the version tag in `package.json` and rerun the different parts of the tutorial:
+Upgrade the version tag in `typescript/package.json` and rerun the different parts of the tutorial:
 ```
 npm install
 npm run build
@@ -35,3 +35,15 @@ npm run part4
 ```
 
 An SDK upgrade warrants a new release.
+
+
+### Upgrading Java SDK
+Upgrade the version tag in `java/build.gradle.kts` and rerun the different parts of the tutorial:
+
+```typescript
+./gradlew run
+./gradlew -PmainClass=dev.restate.tour.part1.AppMain run
+./gradlew -PmainClass=dev.restate.tour.part2.AppMain run
+./gradlew -PmainClass=dev.restate.tour.part3.AppMain run
+./gradlew -PmainClass=dev.restate.tour.part4.AppMain run
+```
