@@ -2,33 +2,29 @@ package dev.restate.tour.part3;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.protobuf.BoolValue;
-import com.google.protobuf.Empty;
-import dev.restate.sdk.blocking.RestateBlockingService;
 import dev.restate.sdk.blocking.RestateContext;
 import dev.restate.sdk.core.StateKey;
-import dev.restate.sdk.core.serde.jackson.JacksonSerde;
-import dev.restate.tour.generated.CheckoutGrpc;
-import dev.restate.tour.generated.TicketServiceGrpc;
+import dev.restate.sdk.core.TerminalException;
+import dev.restate.sdk.core.serde.jackson.JacksonSerdes;
+import dev.restate.tour.generated.*;
 import dev.restate.tour.generated.Tour.*;
-import dev.restate.tour.generated.UserSessionGrpc;
-import io.grpc.stub.StreamObserver;
 
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserSession extends UserSessionGrpc.UserSessionImplBase implements RestateBlockingService {
+public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
-    public static final StateKey<Set<String>> STATE_KEY = StateKey.of("tickets", JacksonSerde.typeRef(new TypeReference<>() {}));
+
+    public static final StateKey<Set<String>> STATE_KEY = StateKey.of("tickets", JacksonSerdes.of(new TypeReference<>() {}));
 
     @Override
-    public void addTicket(ReserveTicket request, StreamObserver<BoolValue> responseObserver) {
-        RestateContext ctx = restateContext();
+    public BoolValue addTicket(RestateContext ctx, ReserveTicket request) throws TerminalException {
 
-        var reservationSuccess = ctx.call(
-            TicketServiceGrpc.getReserveMethod(),
-            Ticket.newBuilder().setTicketId(request.getTicketId()).build()
-        ).await().getValue();
+        var client = TicketServiceRestate.newClient(ctx);
+        var reservationSuccess = client
+                .reserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build())
+                .await().getValue();
 
         if(reservationSuccess) {
             var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
@@ -40,13 +36,11 @@ public class UserSession extends UserSessionGrpc.UserSessionImplBase implements 
                     Duration.ofMinutes(15));
         }
 
-        responseObserver.onNext(BoolValue.of(reservationSuccess));
-        responseObserver.onCompleted();
+        return BoolValue.of(reservationSuccess);
     }
 
     @Override
-    public void expireTicket(ExpireTicketRequest request, StreamObserver<Empty> responseObserver) {
-        RestateContext ctx = restateContext();
+    public void expireTicket(RestateContext ctx, ExpireTicketRequest request) throws TerminalException {
         var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
 
         var removed = tickets.removeIf(s -> s.equals(request.getTicketId()));
@@ -59,32 +53,26 @@ public class UserSession extends UserSessionGrpc.UserSessionImplBase implements 
                     Ticket.newBuilder().setTicketId(request.getTicketId()).build()
             );
         }
-
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
     }
 
     @Override
-    public void checkout(CheckoutRequest request, StreamObserver<BoolValue> responseObserver) {
-        RestateContext ctx = restateContext();
-
+    public BoolValue checkout(RestateContext ctx, CheckoutRequest request) throws TerminalException {
         // 1. Retrieve the tickets from state
         var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
 
         // 2. If there are no tickets, return `false`
         if(tickets.isEmpty()){
-            responseObserver.onNext(BoolValue.of(false));
+            return BoolValue.of(false);
         }
 
         // 3. Call the `checkout` function of the checkout service with the tickets
-        var checkoutSuccess = ctx.call(
-                CheckoutGrpc.getCheckoutMethod(),
-                CheckoutFlowRequest
-                        .newBuilder()
-                        .setUserId(request.getUserId())
-                        .addAllTickets(tickets)
-                        .build()
-        ).await();
+        var req = CheckoutFlowRequest
+                .newBuilder()
+                .setUserId(request.getUserId())
+                .addAllTickets(tickets)
+                .build();
+        var client = CheckoutRestate.newClient(ctx);
+        var checkoutSuccess = client.checkout(req).await();
 
         // 4. If this was successful, empty the tickets.
         // Otherwise, let the user try again.
@@ -92,7 +80,6 @@ public class UserSession extends UserSessionGrpc.UserSessionImplBase implements 
             ctx.clear(STATE_KEY);
         }
 
-        responseObserver.onNext(checkoutSuccess);
-        responseObserver.onCompleted();
+        return checkoutSuccess;
     }
 }

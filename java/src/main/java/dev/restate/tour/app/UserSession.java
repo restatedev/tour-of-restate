@@ -1,28 +1,25 @@
 package dev.restate.tour.app;
 
 import com.google.protobuf.BoolValue;
-import com.google.protobuf.Empty;
-import dev.restate.sdk.blocking.RestateBlockingService;
-import dev.restate.tour.generated.UserSessionGrpc;
-import dev.restate.tour.generated.Tour.*;
-import io.grpc.stub.StreamObserver;
+import dev.restate.sdk.blocking.RestateContext;
+import dev.restate.sdk.core.TerminalException;
+import dev.restate.tour.generated.Tour.CheckoutRequest;
+import dev.restate.tour.generated.Tour.ExpireTicketRequest;
+import dev.restate.tour.generated.Tour.ReserveTicket;
+import dev.restate.tour.generated.UserSessionRestate;
 
-public class UserSession extends UserSessionGrpc.UserSessionImplBase implements RestateBlockingService {
+public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
     @Override
-    public void addTicket(ReserveTicket request, StreamObserver<BoolValue> responseObserver) {
-        responseObserver.onNext(BoolValue.of(true));
-        responseObserver.onCompleted();
+    public BoolValue addTicket(RestateContext ctx, ReserveTicket request) throws TerminalException {
+        return BoolValue.of(true);
     }
 
     @Override
-    public void expireTicket(ExpireTicketRequest request, StreamObserver<Empty> responseObserver) {
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
+    public void expireTicket(RestateContext ctx, ExpireTicketRequest request) throws TerminalException {
     }
 
     @Override
-    public void checkout(CheckoutRequest request, StreamObserver<BoolValue> responseObserver) {
-        responseObserver.onNext(BoolValue.of(true));
-        responseObserver.onCompleted();
+    public BoolValue checkout(RestateContext ctx, CheckoutRequest request) throws TerminalException {
+        return BoolValue.of(true);
     }
 }

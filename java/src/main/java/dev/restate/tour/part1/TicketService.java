@@ -1,33 +1,28 @@
 package dev.restate.tour.part1;
 
 import com.google.protobuf.BoolValue;
-import com.google.protobuf.Empty;
-import dev.restate.sdk.blocking.RestateBlockingService;
-import dev.restate.tour.generated.TicketServiceGrpc;
-import dev.restate.tour.generated.Tour.*;
-import io.grpc.stub.StreamObserver;
+import dev.restate.sdk.blocking.RestateContext;
+import dev.restate.sdk.core.TerminalException;
+import dev.restate.tour.generated.TicketServiceRestate;
+import dev.restate.tour.generated.Tour.Ticket;
 
-public class TicketService extends TicketServiceGrpc.TicketServiceImplBase implements RestateBlockingService {
+public class TicketService extends TicketServiceRestate.TicketServiceRestateImplBase {
+
     @Override
-    public void reserve(Ticket request, StreamObserver<BoolValue> responseObserver) {
+    public BoolValue reserve(RestateContext ctx, Ticket request) throws TerminalException {
         try {
             Thread.sleep(35000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        responseObserver.onNext(BoolValue.of(true));
-        responseObserver.onCompleted();
+        return BoolValue.of(true);
     }
 
     @Override
-    public void unreserve(Ticket request, StreamObserver<Empty> responseObserver) {
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
+    public void unreserve(RestateContext ctx, Ticket request) throws TerminalException {
     }
 
     @Override
-    public void markAsSold(Ticket request, StreamObserver<Empty> responseObserver) {
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
+    public void markAsSold(RestateContext ctx, Ticket request) throws TerminalException {
     }
 }

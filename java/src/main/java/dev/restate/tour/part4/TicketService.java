@@ -2,58 +2,45 @@ package dev.restate.tour.part4;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.protobuf.BoolValue;
-import com.google.protobuf.Empty;
-import dev.restate.sdk.blocking.RestateBlockingService;
 import dev.restate.sdk.blocking.RestateContext;
 import dev.restate.sdk.core.StateKey;
-import dev.restate.sdk.core.serde.jackson.JacksonSerde;
+import dev.restate.sdk.core.TerminalException;
+import dev.restate.sdk.core.serde.jackson.JacksonSerdes;
 import dev.restate.tour.auxiliary.TicketStatus;
-import dev.restate.tour.generated.TicketServiceGrpc;
-import dev.restate.tour.generated.Tour.*;
-import io.grpc.stub.StreamObserver;
+import dev.restate.tour.generated.TicketServiceRestate;
+import dev.restate.tour.generated.Tour.Ticket;
 
-public class TicketService extends TicketServiceGrpc.TicketServiceImplBase implements RestateBlockingService {
+public class TicketService extends TicketServiceRestate.TicketServiceRestateImplBase {
 
-    public static final StateKey<TicketStatus> STATE_KEY = StateKey.of("status", JacksonSerde.typeRef(new TypeReference<>() {}));
+    public static final StateKey<TicketStatus> STATE_KEY = StateKey.of("status", JacksonSerdes.of(new TypeReference<>() {}));
 
     @Override
-    public void reserve(Ticket request, StreamObserver<BoolValue> responseObserver) {
-        RestateContext ctx = restateContext();
-
+    public BoolValue reserve(RestateContext ctx, Ticket request) throws TerminalException {
         var status = ctx.get(STATE_KEY).orElse(TicketStatus.Available);
 
         if(status.equals(TicketStatus.Available)){
             ctx.set(STATE_KEY, TicketStatus.Reserved);
-            responseObserver.onNext(BoolValue.of(true));
+            return BoolValue.of(true);
         } else {
-            responseObserver.onNext(BoolValue.of(false));
+            return BoolValue.of(false);
         }
-        responseObserver.onCompleted();
     }
 
     @Override
-    public void unreserve(Ticket request, StreamObserver<Empty> responseObserver) {
-        RestateContext ctx = restateContext();
-
+    public void unreserve(RestateContext ctx, Ticket request) throws TerminalException {
         var status = ctx.get(STATE_KEY).orElse(TicketStatus.Available);
 
         if(!status.equals(TicketStatus.Sold)){
             ctx.clear(STATE_KEY);
         }
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
     }
 
     @Override
-    public void markAsSold(Ticket request, StreamObserver<Empty> responseObserver) {
-        RestateContext ctx = restateContext();
-
+    public void markAsSold(RestateContext ctx, Ticket request) throws TerminalException {
         var status = ctx.get(STATE_KEY).orElse(TicketStatus.Available);
 
         if(status.equals(TicketStatus.Reserved)){
             ctx.set(STATE_KEY, TicketStatus.Sold);
         }
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
     }
 }

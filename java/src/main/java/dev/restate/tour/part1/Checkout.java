@@ -1,15 +1,14 @@
 package dev.restate.tour.part1;
 
 import com.google.protobuf.BoolValue;
-import dev.restate.sdk.blocking.RestateBlockingService;
-import dev.restate.tour.generated.CheckoutGrpc;
-import dev.restate.tour.generated.Tour.*;
-import io.grpc.stub.StreamObserver;
+import dev.restate.sdk.blocking.RestateContext;
+import dev.restate.sdk.core.TerminalException;
+import dev.restate.tour.generated.CheckoutRestate;
+import dev.restate.tour.generated.Tour.CheckoutFlowRequest;
 
-public class Checkout extends CheckoutGrpc.CheckoutImplBase implements RestateBlockingService {
+public class Checkout extends CheckoutRestate.CheckoutRestateImplBase {
     @Override
-    public void checkout(CheckoutFlowRequest request, StreamObserver<BoolValue> responseObserver) {
-        responseObserver.onNext(BoolValue.of(true));
-        responseObserver.onCompleted();
+    public BoolValue checkout(RestateContext ctx, CheckoutFlowRequest request) throws TerminalException {
+        return BoolValue.of(true);
     }
 }

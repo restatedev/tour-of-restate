@@ -1,51 +1,43 @@
 package dev.restate.tour.part1;
 
 import com.google.protobuf.BoolValue;
-import com.google.protobuf.Empty;
-import dev.restate.sdk.blocking.RestateBlockingService;
 import dev.restate.sdk.blocking.RestateContext;
-import dev.restate.tour.generated.CheckoutGrpc;
+import dev.restate.sdk.core.TerminalException;
+import dev.restate.tour.generated.CheckoutRestate;
 import dev.restate.tour.generated.TicketServiceGrpc;
 import dev.restate.tour.generated.Tour.*;
-import dev.restate.tour.generated.UserSessionGrpc;
-import io.grpc.stub.StreamObserver;
+import dev.restate.tour.generated.UserSessionRestate;
 
-public class UserSession extends UserSessionGrpc.UserSessionImplBase implements RestateBlockingService {
+public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
     @Override
-    public void addTicket(ReserveTicket request, StreamObserver<BoolValue> responseObserver) {
-        RestateContext ctx = restateContext();
+    public BoolValue addTicket(RestateContext ctx, ReserveTicket request) throws TerminalException {
         ctx.oneWayCall(
                 TicketServiceGrpc.getReserveMethod(),
                 Ticket.newBuilder().setTicketId(request.getTicketId()).build()
         );
 
-        responseObserver.onNext(BoolValue.of(true));
-        responseObserver.onCompleted();
+        return BoolValue.of(true);
     }
 
     @Override
-    public void expireTicket(ExpireTicketRequest request, StreamObserver<Empty> responseObserver) {
-        RestateContext ctx = restateContext();
+    public void expireTicket(RestateContext ctx, ExpireTicketRequest request) throws TerminalException {
         ctx.oneWayCall(
                 TicketServiceGrpc.getUnreserveMethod(),
                 Ticket.newBuilder().setTicketId(request.getTicketId()).build()
         );
-
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
     }
 
     @Override
-    public void checkout(CheckoutRequest request, StreamObserver<BoolValue> responseObserver) {
-        RestateContext ctx = restateContext();
+    public BoolValue checkout(RestateContext ctx, CheckoutRequest request) throws TerminalException {
         var req = CheckoutFlowRequest.newBuilder()
                 .setUserId(request.getUserId())
                 .addTickets("456")
                 .build();
-        var success = ctx.call(CheckoutGrpc.getCheckoutMethod(), req).await();
 
-        responseObserver.onNext(success);
-        responseObserver.onCompleted();
+        var client = CheckoutRestate.newClient(ctx);
+        var success = client.checkout(req).await();
+
+        return success;
     }
 
 }
