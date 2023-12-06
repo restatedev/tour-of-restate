@@ -7,24 +7,21 @@ plugins {
   id("com.google.protobuf") version "0.9.1"
 }
 
+repositories {
+  mavenCentral()
+  // OSSRH Snapshots repo
+  // TODO remove it once we have the proper release
+  maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/") }
+}
+
+val restateSdkVersion = "0.0.1-SNAPSHOT"
+
 dependencies {
-  repositories {
-    mavenCentral()
-    maven {
-      url = uri("https://maven.pkg.github.com/restatedev/sdk-java")
-      credentials {
-        username = System.getenv("GH_PACKAGE_READ_ACCESS_USER")
-        password = System.getenv("GH_PACKAGE_READ_ACCESS_TOKEN")
-      }
-    }
-  }
-
-
   // Restate SDK
-  implementation("dev.restate.sdk:sdk-java-blocking:1.0-SNAPSHOT")
-  implementation("dev.restate.sdk:sdk-http-vertx:1.0-SNAPSHOT")
+  implementation("dev.restate:sdk-api:$restateSdkVersion")
+  implementation("dev.restate:sdk-http-vertx:$restateSdkVersion")
   // To use Jackson to read/write state entries (optional)
-  implementation("dev.restate.sdk:sdk-serde-jackson:1.0-SNAPSHOT")
+  implementation("dev.restate:sdk-serde-jackson:$restateSdkVersion")
 
   // Protobuf and grpc dependencies
   implementation("com.google.protobuf:protobuf-java:3.24.3")
@@ -45,7 +42,7 @@ protobuf {
   // We need both grpc and restate codegen(s) because the restate codegen depends on the grpc one
   plugins {
     id("grpc") { artifact = "io.grpc:protoc-gen-grpc-java:1.58.0" }
-    id("restate") { artifact = "dev.restate.sdk:protoc-gen-restate-java-blocking:1.0-SNAPSHOT:all@jar" }
+    id("restate") { artifact = "dev.restate:protoc-gen-restate:$restateSdkVersion:all@jar" }
   }
 
   generateProtoTasks {
@@ -58,27 +55,11 @@ protobuf {
   }
 }
 
-//// Configure code formatter
-//configure<com.diffplug.gradle.spotless.SpotlessExtension> {
-//  java {
-//    googleJavaFormat()
-//    targetExclude("build/generated/**/*.java")
-//  }
-//  kotlin {
-//    ktfmt()
-//  }
-//}
-
+// Set main class
 application {
   if (project.hasProperty("mainClass")) {
     mainClass.set(project.property("mainClass") as String);
   } else {
     mainClass.set("dev.restate.tour.app.AppMain")
   }
-}
-
-// Temporary solution for disabling caching of Java SDK until we release it
-configurations.all {
-  // This disables caching for -SNAPSHOT dependencies
-  resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 }

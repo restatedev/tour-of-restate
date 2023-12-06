@@ -2,10 +2,10 @@ package dev.restate.tour.part4;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.protobuf.BoolValue;
-import dev.restate.sdk.blocking.RestateContext;
-import dev.restate.sdk.core.StateKey;
-import dev.restate.sdk.core.TerminalException;
-import dev.restate.sdk.core.serde.jackson.JacksonSerdes;
+import dev.restate.sdk.RestateContext;
+import dev.restate.sdk.common.StateKey;
+import dev.restate.sdk.common.TerminalException;
+import dev.restate.sdk.serde.jackson.JacksonSerdes;
 import dev.restate.tour.generated.CheckoutRestate;
 import dev.restate.tour.generated.TicketServiceRestate;
 import dev.restate.tour.generated.Tour.*;

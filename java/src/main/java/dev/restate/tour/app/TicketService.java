@@ -1,8 +1,8 @@
 package dev.restate.tour.app;
 
 import com.google.protobuf.BoolValue;
-import dev.restate.sdk.blocking.RestateContext;
-import dev.restate.sdk.core.TerminalException;
+import dev.restate.sdk.RestateContext;
+import dev.restate.sdk.common.TerminalException;
 import dev.restate.tour.generated.TicketServiceRestate;
 import dev.restate.tour.generated.Tour.Ticket;
 

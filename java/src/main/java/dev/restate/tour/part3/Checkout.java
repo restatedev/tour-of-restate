@@ -1,9 +1,9 @@
 package dev.restate.tour.part3;
 
 import com.google.protobuf.BoolValue;
-import dev.restate.sdk.blocking.RestateContext;
-import dev.restate.sdk.core.CoreSerdes;
-import dev.restate.sdk.core.TerminalException;
+import dev.restate.sdk.RestateContext;
+import dev.restate.sdk.common.CoreSerdes;
+import dev.restate.sdk.common.TerminalException;
 import dev.restate.tour.auxiliary.EmailClient;
 import dev.restate.tour.auxiliary.PaymentClient;
 import dev.restate.tour.generated.CheckoutRestate;
