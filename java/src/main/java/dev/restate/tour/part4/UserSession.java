@@ -26,7 +26,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
                 .reserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build())
                 .await().getValue();
 
-        if(reservationSuccess) {
+        if (reservationSuccess) {
             var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
             tickets.add(request.getTicketId());
             ctx.set(STATE_KEY, tickets);
@@ -45,7 +45,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
         var removed = tickets.removeIf(s -> s.equals(request.getTicketId()));
 
-        if(removed) {
+        if (removed) {
             ctx.set(STATE_KEY, tickets);
             var client = TicketServiceRestate.newClient(ctx);
             client.oneWay().unreserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build());
@@ -56,9 +56,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
     public BoolValue checkout(RestateContext ctx, CheckoutRequest request) throws TerminalException {
         var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
 
-        boolean something = true;
-
-        if(tickets.isEmpty()){
+        if (tickets.isEmpty()) {
             return BoolValue.of(false);
         }
 
@@ -70,7 +68,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
         var client = CheckoutRestate.newClient(ctx);
         var checkoutSuccess = client.checkout(req).await();
 
-        if(checkoutSuccess.getValue()){
+        if (checkoutSuccess.getValue()) {
             ctx.clear(STATE_KEY);
         }
 

@@ -26,7 +26,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
                 .reserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build())
                 .await().getValue();
 
-        if(reservationSuccess) {
+        if (reservationSuccess) {
             var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
             tickets.add(request.getTicketId());
             ctx.set(STATE_KEY, tickets);
@@ -45,7 +45,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
         var removed = tickets.removeIf(s -> s.equals(request.getTicketId()));
 
-        if(removed) {
+        if (removed) {
             ctx.set(STATE_KEY, tickets);
 
             ctx.oneWayCall(
@@ -61,7 +61,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
         var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
 
         // 2. If there are no tickets, return `false`
-        if(tickets.isEmpty()){
+        if (tickets.isEmpty()) {
             return BoolValue.of(false);
         }
 
@@ -76,7 +76,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
         // 4. If this was successful, empty the tickets.
         // Otherwise, let the user try again.
-        if(checkoutSuccess.getValue()){
+        if (checkoutSuccess.getValue()) {
             ctx.clear(STATE_KEY);
         }
 

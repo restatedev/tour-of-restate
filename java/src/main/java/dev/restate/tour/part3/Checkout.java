@@ -18,7 +18,6 @@ public class Checkout extends CheckoutRestate.CheckoutRestateImplBase {
 
     @Override
     public BoolValue checkout(RestateContext ctx, CheckoutFlowRequest request) throws TerminalException {
-
         // Generate idempotency key for the stripe client
         var idempotencyKey = ctx.sideEffect(CoreSerdes.STRING_UTF8, () -> UUID.randomUUID().toString());
 
@@ -27,7 +26,7 @@ public class Checkout extends CheckoutRestate.CheckoutRestateImplBase {
 
         boolean success = ctx.sideEffect(CoreSerdes.BOOLEAN, () -> paymentClient.call(idempotencyKey, totalPrice));
 
-        if(success) {
+        if (success) {
             ctx.sideEffect(()-> emailClient.notifyUserOfPaymentSuccess(request.getUserId()));
         } else {
             ctx.sideEffect(() -> emailClient.notifyUserOfPaymentFailure(request.getUserId()));

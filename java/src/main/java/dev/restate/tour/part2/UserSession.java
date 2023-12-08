@@ -24,7 +24,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
         var ticket = Ticket.newBuilder().setTicketId(request.getTicketId()).build();
         var reservationSuccess = ticketSvcClient.reserve(ticket).await();
 
-        if(reservationSuccess.getValue()) {
+        if (reservationSuccess.getValue()) {
             var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
             tickets.add(request.getTicketId());
             ctx.set(STATE_KEY, tickets);
@@ -43,7 +43,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
         var removed = tickets.removeIf(s -> s.equals(request.getTicketId()));
 
-        if(removed) {
+        if (removed) {
             ctx.set(STATE_KEY, tickets);
 
             ctx.oneWayCall(
@@ -57,7 +57,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
     public BoolValue checkout(RestateContext ctx, CheckoutRequest request) throws TerminalException {
         var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
 
-        if(tickets.isEmpty()){
+        if (tickets.isEmpty()) {
             return BoolValue.of(false);
         }
 
@@ -69,7 +69,7 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
         var client = CheckoutRestate.newClient(ctx);
         var checkoutSuccess = client.checkout(req).await();
 
-        if(checkoutSuccess.getValue()){
+        if (checkoutSuccess.getValue()) {
             ctx.clear(STATE_KEY);
         }
 

@@ -6,15 +6,13 @@ import dev.restate.sdk.common.TerminalException;
 import dev.restate.tour.generated.TicketServiceRestate;
 import dev.restate.tour.generated.Tour.Ticket;
 
+import java.time.Duration;
+
 public class TicketService extends TicketServiceRestate.TicketServiceRestateImplBase {
 
     @Override
     public BoolValue reserve(RestateContext ctx, Ticket request) throws TerminalException {
-        try {
-            Thread.sleep(35000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        ctx.sleep(Duration.ofSeconds(35));
         return BoolValue.of(true);
     }
 
