@@ -14,7 +14,7 @@ import dev.restate.tour.generated.Tour.Ticket;
 import io.grpc.Status;
 
 public class TicketService extends TicketServiceRestate.TicketServiceRestateImplBase {
-    public static final StateKey<TicketStatus> STATE_KEY = StateKey.of("status", JacksonSerdes.of(new TypeReference<>() {}));
+    public static final StateKey<TicketStatus> STATE_KEY = StateKey.of("status", JacksonSerdes.of(TicketStatus.class));
 
     @Override
     public BoolValue reserve(RestateContext ctx, Ticket request) throws TerminalException {
@@ -35,15 +35,6 @@ public class TicketService extends TicketServiceRestate.TicketServiceRestateImpl
         if (!status.equals(TicketStatus.Sold)) {
             ctx.clear(STATE_KEY);
         }
-
-        ctx.sideEffect(CoreSerdes.BOOLEAN, () -> {
-            var result = PaymentClient.get().call("tx-id", 500);
-            if (result) {
-                throw new io.grpc.StatusRuntimeException(Status.UNKNOWN);
-            } else {
-                return result;
-            }
-        });
     }
 
     @Override

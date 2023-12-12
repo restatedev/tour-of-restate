@@ -20,9 +20,8 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
     @Override
     public BoolValue addTicket(RestateContext ctx, ReserveTicket request) throws TerminalException {
-
-        var client = TicketServiceRestate.newClient(ctx);
-        var reservationSuccess = client
+        var ticketClnt = TicketServiceRestate.newClient(ctx);
+        var reservationSuccess = ticketClnt
                 .reserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build())
                 .await().getValue();
 
@@ -31,9 +30,10 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
             tickets.add(request.getTicketId());
             ctx.set(STATE_KEY, tickets);
 
-            ctx.delayedCall(UserSessionGrpc.getExpireTicketMethod(),
-                    ExpireTicketRequest.newBuilder().setTicketId(request.getTicketId()).setUserId(request.getUserId()).build(),
-                    Duration.ofMinutes(15));
+            var userSessionClnt = UserSessionRestate.newClient(ctx);
+            userSessionClnt.delayed(Duration.ofMinutes(15)).expireTicket(
+                    ExpireTicketRequest.newBuilder().setTicketId(request.getTicketId()).setUserId(request.getUserId()).build()
+            );
         }
 
         return BoolValue.of(reservationSuccess);
@@ -47,11 +47,8 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
         if (removed) {
             ctx.set(STATE_KEY, tickets);
-
-            ctx.oneWayCall(
-                    TicketServiceGrpc.getUnreserveMethod(),
-                    Ticket.newBuilder().setTicketId(request.getTicketId()).build()
-            );
+            var ticketClnt = TicketServiceRestate.newClient(ctx);
+            ticketClnt.oneWay().unreserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build());
         }
     }
 
@@ -66,17 +63,16 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
         }
 
         // 3. Call the `checkout` function of the checkout service with the tickets
-        var req = CheckoutFlowRequest
-                .newBuilder()
-                .setUserId(request.getUserId())
-                .addAllTickets(tickets)
-                .build();
-        var client = CheckoutRestate.newClient(ctx);
-        var checkoutSuccess = client.checkout(req).await();
+        var checkoutClnt = CheckoutRestate.newClient(ctx);
+        var checkoutSuccess = checkoutClnt.checkout(
+                CheckoutFlowRequest.newBuilder().setUserId(request.getUserId()).addAllTickets(tickets).build()
+        ).await();
 
         // 4. If this was successful, empty the tickets.
         // Otherwise, let the user try again.
         if (checkoutSuccess.getValue()) {
+            var ticketClnt = TicketServiceRestate.newClient(ctx);
+            tickets.forEach(t -> ticketClnt.oneWay().markAsSold(Ticket.newBuilder().setTicketId(t).build()));
             ctx.clear(STATE_KEY);
         }
 

@@ -21,22 +21,23 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
     @Override
     public BoolValue addTicket(RestateContext ctx, ReserveTicket request) throws TerminalException {
-        var client = TicketServiceRestate.newClient(ctx);
-        var reservationSuccess = client
+        var ticketClnt = TicketServiceRestate.newClient(ctx);
+        var reservationSuccess = ticketClnt
                 .reserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build())
-                .await().getValue();
+                .await();
 
-        if (reservationSuccess) {
+        if (reservationSuccess.getValue()) {
             var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
             tickets.add(request.getTicketId());
             ctx.set(STATE_KEY, tickets);
 
             var userSessionClnt = UserSessionRestate.newClient(ctx);
-            var req = ExpireTicketRequest.newBuilder().setTicketId(request.getTicketId()).setUserId(request.getUserId()).build();
-            userSessionClnt.delayed(Duration.ofMinutes(15)).expireTicket(req);
+            userSessionClnt.delayed(Duration.ofMinutes(15)).expireTicket(
+                ExpireTicketRequest.newBuilder().setTicketId(request.getTicketId()).setUserId(request.getUserId()).build()
+            );
         }
 
-        return BoolValue.of(reservationSuccess);
+        return reservationSuccess;
     }
 
     @Override
@@ -47,8 +48,8 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
         if (removed) {
             ctx.set(STATE_KEY, tickets);
-            var client = TicketServiceRestate.newClient(ctx);
-            client.oneWay().unreserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build());
+            var ticketClnt = TicketServiceRestate.newClient(ctx);
+            ticketClnt.oneWay().unreserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build());
         }
     }
 
@@ -60,15 +61,14 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
             return BoolValue.of(false);
         }
 
-        var req = CheckoutFlowRequest
-                .newBuilder()
-                .setUserId(request.getUserId())
-                .addAllTickets(tickets)
-                .build();
-        var client = CheckoutRestate.newClient(ctx);
-        var checkoutSuccess = client.checkout(req).await();
+        var checkoutClnt = CheckoutRestate.newClient(ctx);
+        var checkoutSuccess = checkoutClnt.checkout(
+            CheckoutFlowRequest.newBuilder().setUserId(request.getUserId()).addAllTickets(tickets).build()
+        ).await();
 
         if (checkoutSuccess.getValue()) {
+            var ticketClnt = TicketServiceRestate.newClient(ctx);
+            tickets.forEach(t -> ticketClnt.oneWay().markAsSold(Ticket.newBuilder().setTicketId(t).build()));
             ctx.clear(STATE_KEY);
         }
 

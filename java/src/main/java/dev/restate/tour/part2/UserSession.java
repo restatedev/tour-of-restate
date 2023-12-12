@@ -20,18 +20,20 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
     @Override
     public BoolValue addTicket(RestateContext ctx, ReserveTicket request) throws TerminalException {
-        var ticketSvcClient = TicketServiceRestate.newClient(ctx);
-        var ticket = Ticket.newBuilder().setTicketId(request.getTicketId()).build();
-        var reservationSuccess = ticketSvcClient.reserve(ticket).await();
+        var ticketClnt = TicketServiceRestate.newClient(ctx);
+        var reservationSuccess = ticketClnt
+                .reserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build())
+                .await();
 
         if (reservationSuccess.getValue()) {
             var tickets = ctx.get(STATE_KEY).orElseGet(HashSet::new);
             tickets.add(request.getTicketId());
             ctx.set(STATE_KEY, tickets);
 
-            ctx.delayedCall(UserSessionGrpc.getExpireTicketMethod(),
-                    ExpireTicketRequest.newBuilder().setTicketId(request.getTicketId()).setUserId(request.getUserId()).build(),
-                    Duration.ofMinutes(15));
+            var userSessionClnt = UserSessionRestate.newClient(ctx);
+            userSessionClnt.delayed(Duration.ofMinutes(15)).expireTicket(
+                    ExpireTicketRequest.newBuilder().setTicketId(request.getTicketId()).setUserId(request.getUserId()).build()
+            );
         }
 
         return reservationSuccess;
@@ -45,11 +47,8 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
 
         if (removed) {
             ctx.set(STATE_KEY, tickets);
-
-            ctx.oneWayCall(
-                    TicketServiceGrpc.getUnreserveMethod(),
-                    Ticket.newBuilder().setTicketId(request.getTicketId()).build()
-            );
+            var ticketClnt = TicketServiceRestate.newClient(ctx);
+            ticketClnt.oneWay().unreserve(Ticket.newBuilder().setTicketId(request.getTicketId()).build());
         }
     }
 
@@ -61,13 +60,10 @@ public class UserSession extends UserSessionRestate.UserSessionRestateImplBase {
             return BoolValue.of(false);
         }
 
-        var req = CheckoutFlowRequest
-                .newBuilder()
-                .setUserId(request.getUserId())
-                .addAllTickets(tickets)
-                .build();
-        var client = CheckoutRestate.newClient(ctx);
-        var checkoutSuccess = client.checkout(req).await();
+        var checkoutClnt = CheckoutRestate.newClient(ctx);
+        var checkoutSuccess = checkoutClnt.checkout(
+                CheckoutFlowRequest.newBuilder().setUserId(request.getUserId()).addAllTickets(tickets).build()
+        ).await();
 
         if (checkoutSuccess.getValue()) {
             ctx.clear(STATE_KEY);

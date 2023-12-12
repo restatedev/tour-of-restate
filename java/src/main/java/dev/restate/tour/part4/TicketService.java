@@ -12,7 +12,7 @@ import dev.restate.tour.generated.Tour.Ticket;
 
 public class TicketService extends TicketServiceRestate.TicketServiceRestateImplBase {
 
-    public static final StateKey<TicketStatus> STATE_KEY = StateKey.of("status", JacksonSerdes.of(new TypeReference<>() {}));
+    public static final StateKey<TicketStatus> STATE_KEY = StateKey.of("status", JacksonSerdes.of(TicketStatus.class));
 
     @Override
     public BoolValue reserve(RestateContext ctx, Ticket request) throws TerminalException {

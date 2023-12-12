@@ -9,6 +9,7 @@ import dev.restate.tour.auxiliary.PaymentClient;
 import dev.restate.tour.generated.CheckoutRestate;
 import dev.restate.tour.generated.Tour.CheckoutFlowRequest;
 
+import java.time.Duration;
 import java.util.UUID;
 
 public class Checkout extends CheckoutRestate.CheckoutRestateImplBase {
