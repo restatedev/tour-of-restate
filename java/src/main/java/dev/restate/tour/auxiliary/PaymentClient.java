@@ -21,7 +21,7 @@ public class PaymentClient {
         } else {
             System.out.println("Payment call failed for idempotency key " + idempotencyKey + " and amount " + amount + ". Retrying...");
             i = i + 1;
-            throw new Error("Payment call failed");
+            throw new IllegalStateException("Payment call failed");
         }
     }
 }
