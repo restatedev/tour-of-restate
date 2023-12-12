@@ -23,5 +23,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-      - run: npm run verify
+      - run: cd typescript && npm ci 
+      - run: cd typescript && npm run verify
