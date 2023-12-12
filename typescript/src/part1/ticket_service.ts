@@ -31,11 +31,7 @@ const markAsSold = async (ctx: restate.RpcContext) => {
   return true;
 };
 
-export const ticketDbRouter = restate.keyedRouter({
-  reserve: reserve,
-  unreserve: unreserve,
-  markAsSold: markAsSold,
-});
+export const ticketDbRouter = restate.keyedRouter({ reserve, unreserve, markAsSold });
 
 export const ticketServiceApi: restate.ServiceApi<typeof ticketDbRouter> = {
   path: "TicketService",

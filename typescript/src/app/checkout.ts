@@ -18,9 +18,7 @@ const checkout = async (
   return true;
 };
 
-export const checkoutRouter = restate.router({
-  checkout: checkout,
-});
+export const checkoutRouter = restate.router({ checkout });
 
 export const checkoutApi: restate.ServiceApi<typeof checkoutRouter> = {
   path: "Checkout",

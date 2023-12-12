@@ -33,11 +33,8 @@ const unreserve = async (ctx: restate.RpcContext) => {
   const status =
     (await ctx.get<TicketStatus>("status")) ?? TicketStatus.Available;
 
-  if (status === TicketStatus.Sold) {
-    return false;
-  } else {
+  if (status !== TicketStatus.Sold) {
     ctx.clear("status");
-    return true;
   }
 };
 
@@ -47,17 +44,10 @@ const markAsSold = async (ctx: restate.RpcContext) => {
 
   if (status === TicketStatus.Reserved) {
     ctx.set("status", TicketStatus.Sold);
-    return true;
-  } else {
-    return false;
   }
 };
 
-export const ticketDbRouter = restate.keyedRouter({
-  reserve: reserve,
-  unreserve: unreserve,
-  markAsSold: markAsSold,
-});
+export const ticketDbRouter = restate.keyedRouter({ reserve, unreserve, markAsSold });
 
 export const ticketServiceApi: restate.ServiceApi<typeof ticketDbRouter> = {
   path: "TicketService",

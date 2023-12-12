@@ -31,19 +31,15 @@ const checkout = async (
   const email = EmailClient.get();
 
   if (success) {
-    console.info("Payment successful. Notifying user about shipment.");
     await ctx.sideEffect(() => email.notifyUserOfPaymentSuccess(request.userId));
   } else {
-    console.info("Payment failure. Notifying user about it.");
     await ctx.sideEffect( () => email.notifyUserOfPaymentFailure(request.userId));
   }
 
   return success;
 };
 
-export const checkoutRouter = restate.router({
-  checkout: checkout,
-});
+export const checkoutRouter = restate.router({ checkout });
 
 export const checkoutApi: restate.ServiceApi<typeof checkoutRouter> = {
   path: "Checkout",

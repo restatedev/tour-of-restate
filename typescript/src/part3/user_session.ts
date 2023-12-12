@@ -72,11 +72,7 @@ const checkout = async (ctx: restate.RpcContext, userId: string) => {
   return checkoutSuccess;
 };
 
-export const userSessionRouter = restate.keyedRouter({
-  addTicket: addTicket,
-  expireTicket: expireTicket,
-  checkout: checkout,
-});
+export const userSessionRouter = restate.keyedRouter({ addTicket, expireTicket, checkout});
 
 export const userSessionApi: restate.ServiceApi<typeof userSessionRouter> = {
   path: "UserSession",
