@@ -24,11 +24,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci 
-        with:
-          build-root-directory: typescript
+        working-directory: typescript
       - run: npm run verify
-        with:
-          build-root-directory: typescript
+        working-directory: typescript
       
   build-java:
     # prevent from running on forks
