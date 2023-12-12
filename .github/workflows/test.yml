@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-ts:
     # prevent from running on forks
     if: github.repository_owner == 'restatedev'
     runs-on: ubuntu-latest
@@ -23,5 +23,32 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-      - run: cd typescript && npm ci 
-      - run: cd typescript && npm run verify
+      - run: npm ci 
+        with:
+          build-root-directory: typescript
+      - run: npm run verify
+        with:
+          build-root-directory: typescript
+      
+  build-java:
+    # prevent from running on forks
+    if: github.repository_owner == 'restatedev'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jvm-version: [ 17 ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use JVM ${{ matrix.jvm-version }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.jvm-version }}
+
+      - name: Test java tour
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: check
+          build-root-directory: java
