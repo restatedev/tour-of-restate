@@ -17,7 +17,7 @@ Have a look at the [Tour of Restate tutorial](https://docs.restate.dev/tour) in 
 ## Releasing
 
 To create a new release, push a tag of the form `vX.Y.Z`.
-Then [create a release via GitHub](https://github.com/restatedev/tour-of-restate-typescript/releases).
+Then [create a release via GitHub](https://github.com/restatedev/tour-of-restate/releases).
 
 Releases of this repository are referred to by the [documentation](https://github.com/restatedev/documentation).
 Please update the version tag referenced on the [Tour of Restate](https://github.com/restatedev/documentation/blob/main/docs/tour.mdx) documentation page.

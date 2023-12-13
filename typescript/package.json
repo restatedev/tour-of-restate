@@ -1,5 +1,5 @@
 {
-  "name": "@restatedev/tour-of-restate-typescript",
+  "name": "@restatedev/tour-of-restate",
   "version": "0.0.1",
   "description": "Tour of Restate's key features with the Typescript handler API",
   "type": "commonjs",
