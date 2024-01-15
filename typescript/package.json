@@ -19,7 +19,7 @@
   "author": "Restate Developers",
   "email": "code@restate.dev",
   "dependencies": {
-    "@restatedev/restate-sdk": "0.6.0",
+    "@restatedev/restate-sdk": "0.7.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
